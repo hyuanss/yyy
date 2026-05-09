@@ -1,0 +1,6 @@
+"""
+File: chroma_db/.gitkeep
+Purpose: Keep chroma_db directory in version control.
+Key contents: empty placeholder.
+Usage: Chroma persistent storage directory.
+"""

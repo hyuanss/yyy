@@ -1,0 +1,7 @@
+"""
+File: data/external/records.csv
+Purpose: Placeholder external data file for agent tools.
+Key contents: CSV header only; replace with real data.
+Usage: Used by fetch_external_data tool.
+"""
+user_id,feature,efficiency,consumables,comparison,time

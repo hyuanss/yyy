@@ -1,0 +1,6 @@
+"""
+File: data/.gitkeep
+Purpose: Keep data directory in version control.
+Key contents: empty placeholder.
+Usage: Ensures /data exists for knowledge documents.
+"""

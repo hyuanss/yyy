@@ -1,20 +1,25 @@
 """
 File: app/services/tool_service.py
-Purpose: Tool execution service for grading and content generation.
+Purpose: Tool execution service wired to existing agent tools.
 Key classes/methods: ToolService.grade_homework(), generate_quiz(), generate_lesson(), generate_report().
 Usage: Used by /api/tools endpoints and AgentService.
 """
 from __future__ import annotations
 
-from typing import List
+from langchain.agent.tools.agent_tools import (
+    get_weather,
+    get_user_location,
+    get_user_id,
+    get_current_month,
+)
 
 
 class ToolService:
-    """A lightweight tool execution layer with template-based outputs."""
+    """Tool execution layer that wraps existing tool functions."""
 
     def grade_homework(self, question: str, answer: str) -> str:
         """Return a simple rubric-based evaluation result."""
-        # Placeholder scoring logic; replace with model inference if needed.
+        # Placeholder: keep a simple deterministic output for now.
         score = 85 if len(answer) > 20 else 60
         return f"题目: {question}\n评分: {score}/100\n点评: 回答结构清晰，可加强例子与推导。"
 
@@ -27,7 +32,7 @@ class ToolService:
             "3) 应用题：给出一个真实场景进行分析。"
         )
 
-    def generate_lesson(self, course: str, objectives: List[str]) -> str:
+    def generate_lesson(self, course: str, objectives: list[str]) -> str:
         """Generate a compact lesson plan using a fixed template."""
         objectives_text = "、".join(objectives)
         return (
@@ -43,3 +48,19 @@ class ToolService:
             f"学习摘要: {summary}\n"
             "建议: 复习关键概念并完成对应练习。"
         )
+
+    def get_weather(self, city: str) -> str:
+        """Expose weather tool for testing."""
+        return get_weather(city)
+
+    def get_user_location(self) -> str:
+        """Expose user location tool for testing."""
+        return get_user_location()
+
+    def get_user_id(self) -> str:
+        """Expose user id tool for testing."""
+        return get_user_id()
+
+    def get_current_month(self) -> str:
+        """Expose current month tool for testing."""
+        return get_current_month()
