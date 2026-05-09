@@ -1,12 +1,8 @@
 """
-File: app/utils/chain_debug.py
-Purpose: Debug helper for chain outputs.
-Key functions: format_debug().
-Usage: Used during development to inspect intermediate results.
+Deprecated module.
+Please import from top-level `utils` instead of `app.utils`.
+This file is kept for backward compatibility.
 """
-from typing import Any
+from utils.chain_debug import print_prompt
 
-
-def format_debug(data: Any) -> str:
-    """Format debug information into a readable string."""
-    return f"[DEBUG] {data!r}"
+__all__ = ["print_prompt"]

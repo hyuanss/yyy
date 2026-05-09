@@ -1,12 +1,8 @@
 """
-File: app/utils/prompt_loader.py
-Purpose: Load prompt templates from disk.
-Key functions: load_prompt().
-Usage: Used by services when constructing prompts.
+Deprecated module.
+Please import from top-level `utils` instead of `app.utils`.
+This file is kept for backward compatibility.
 """
-from pathlib import Path
+from utils.prompt_loader import load_system_prompt, load_report_prompt
 
-
-def load_prompt(path: str) -> str:
-    """Load a prompt template from the given file path."""
-    return Path(path).read_text(encoding="utf-8")
+__all__ = ["load_system_prompt", "load_report_prompt"]

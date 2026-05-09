@@ -1,12 +1,13 @@
 """
-File: app/utils/logger_handler.py
-Purpose: Create module-specific loggers.
-Key functions: get_logger().
-Usage: Used across services for consistent logging.
+Deprecated module.
+Please import from top-level `utils` instead of `app.utils`.
+This file is kept for backward compatibility.
 """
-import logging
+from utils.logger_handler import (  # noqa: F401
+    get_logger,
+    logger,
+    mask_sensitive_data,
+    SensitiveDataFilter,
+)
 
-
-def get_logger(name: str) -> logging.Logger:
-    """Return a configured logger."""
-    return logging.getLogger(name)
+__all__ = ["get_logger", "logger", "mask_sensitive_data", "SensitiveDataFilter"]

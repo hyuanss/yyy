@@ -1,17 +1,20 @@
 """
-File: app/utils/file_handler.py
-Purpose: Simple file operations for uploads or cached data.
-Key functions: read_text(), write_text().
-Usage: Can be used by services for file storage.
+Deprecated module.
+Please import from top-level `utils` instead of `app.utils`.
+This file is kept for backward compatibility.
 """
-from pathlib import Path
+from utils.file_handler import (  # noqa: F401
+    get_file_md5_hex,
+    listdir_with_allowed_type,
+    csv_loader,
+    pdf_loader,
+    txt_loader,
+)
 
-
-def read_text(path: str) -> str:
-    """Read text content from a file path."""
-    return Path(path).read_text(encoding="utf-8")
-
-
-def write_text(path: str, content: str) -> None:
-    """Write text content to a file path."""
-    Path(path).write_text(content, encoding="utf-8")
+__all__ = [
+    "get_file_md5_hex",
+    "listdir_with_allowed_type",
+    "csv_loader",
+    "pdf_loader",
+    "txt_loader",
+]

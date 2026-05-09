@@ -1,14 +1,14 @@
 """
-File: app/utils/config_handler.py
-Purpose: Lightweight YAML config loader.
-Key functions: load_yaml().
-Usage: Used to load /config/*.yml files when needed.
+Deprecated module.
+Please import from top-level `utils` instead of `app.utils`.
+This file is kept for backward compatibility.
 """
-from pathlib import Path
-from typing import Any
-import yaml
+from utils.config_handler import (  # noqa: F401
+    ConfigHandler,
+    rag_conf,
+    chroma_conf,
+    prompts_conf,
+    agent_conf,
+)
 
-
-def load_yaml(path: str) -> Any:
-    """Load YAML config from a file path."""
-    return yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+__all__ = ["ConfigHandler", "rag_conf", "chroma_conf", "prompts_conf", "agent_conf"]

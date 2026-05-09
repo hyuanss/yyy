@@ -1,6 +1,4 @@
 """
-File: app/utils/__init__.py
-Purpose: Utilities package marker.
-Key contents: none.
-Usage: Imported for utility modules.
+Deprecated utils package.
+Please use top-level `utils` package instead.
 """
