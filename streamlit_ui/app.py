@@ -6,15 +6,15 @@ BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000/api")
 API_KEY = os.getenv("EDU_API_KEY", "")
 
 
-def _headers() -> dict:
-    """Prepare request headers with API key if configured."""
-    headers = {}
+def _headers(role: str) -> dict:
+    """Prepare request headers with API key and role if configured."""
+    headers = {"X-User-Role": role}
     if API_KEY:
         headers["X-API-Key"] = API_KEY
     return headers
 
 
-def render_chat() -> None:
+def render_chat(role: str) -> None:
     """Render the chat UI."""
     st.subheader("智能答疑")
     user_id = st.text_input("用户ID", value="student_001")
@@ -23,13 +23,13 @@ def render_chat() -> None:
         response = requests.post(
             f"{BACKEND_URL}/chat",
             json={"user_id": user_id, "message": message},
-            headers=_headers(),
+            headers=_headers(role),
             timeout=30,
         )
         st.write(response.json().get("reply", ""))
 
 
-def render_tools() -> None:
+def render_tools(role: str) -> None:
     """Render tool-related UI."""
     st.subheader("教学工具")
     tool = st.selectbox("选择工具", ["作业批改", "自动出题", "教案生成", "报告生成"])
@@ -41,7 +41,7 @@ def render_tools() -> None:
             response = requests.post(
                 f"{BACKEND_URL}/tools/grade_homework",
                 json={"question": question, "answer": answer},
-                headers=_headers(),
+                headers=_headers(role),
                 timeout=30,
             )
             st.write(response.json().get("result", ""))
@@ -53,7 +53,7 @@ def render_tools() -> None:
             response = requests.post(
                 f"{BACKEND_URL}/tools/generate_quiz",
                 json={"topic": topic, "difficulty": difficulty},
-                headers=_headers(),
+                headers=_headers(role),
                 timeout=30,
             )
             st.write(response.json().get("quiz", ""))
@@ -65,7 +65,7 @@ def render_tools() -> None:
             response = requests.post(
                 f"{BACKEND_URL}/tools/generate_lesson",
                 json={"course": course, "objectives": [o.strip() for o in objectives.split(",") if o.strip()]},
-                headers=_headers(),
+                headers=_headers(role),
                 timeout=30,
             )
             st.write(response.json().get("lesson", ""))
@@ -76,13 +76,13 @@ def render_tools() -> None:
             response = requests.post(
                 f"{BACKEND_URL}/tools/generate_report",
                 json={"summary": summary},
-                headers=_headers(),
+                headers=_headers(role),
                 timeout=30,
             )
             st.write(response.json().get("report", ""))
 
 
-def render_reports() -> None:
+def render_reports(role: str) -> None:
     """Render structured report UI."""
     st.subheader("学习报告")
     student_name = st.text_input("学生姓名")
@@ -98,19 +98,19 @@ def render_reports() -> None:
                 "weak_points": [p.strip() for p in weak_points.split(",") if p.strip()],
                 "suggestions": suggestions,
             },
-            headers=_headers(),
+            headers=_headers(role),
             timeout=30,
         )
         st.write(response.json().get("report", ""))
 
 
 st.title("教育智能体系统")
-
+role = st.sidebar.selectbox("角色", ["student", "teacher", "admin"])
 section = st.sidebar.radio("功能", ["智能答疑", "教学工具", "学习报告"])
 
 if section == "智能答疑":
-    render_chat()
+    render_chat(role)
 elif section == "教学工具":
-    render_tools()
+    render_tools(role)
 else:
-    render_reports()
+    render_reports(role)

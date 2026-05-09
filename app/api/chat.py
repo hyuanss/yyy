@@ -11,9 +11,11 @@ from app.db.repository import save_chat_log
 from app.db.session import SessionLocal
 from app.schemas.chat import ChatRequest, ChatResponse
 from app.services.agent_service import AgentService
+from app.services.memory_service import MemoryService
 
 router = APIRouter(tags=["chat"], dependencies=[Depends(verify_api_key)])
 agent_service = AgentService()
+memory_service = MemoryService()
 
 
 @router.post("/chat", response_model=ChatResponse)
@@ -24,6 +26,7 @@ def chat_endpoint(payload: ChatRequest) -> ChatResponse:
         if SessionLocal:
             with SessionLocal() as db:
                 save_chat_log(db, payload.user_id, payload.message, reply)
+                memory_service.update_memory(db, payload.user_id)
         return ChatResponse(reply=reply)
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"chat failed: {exc}") from exc

@@ -7,6 +7,7 @@ Usage: POST /api/tools/grade_homework etc.
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.core.auth import verify_api_key
+from app.core.roles import Role, require_role
 from app.schemas.tool import GradeHomeworkRequest, GradeHomeworkResponse
 from app.schemas.tool import GenerateQuizRequest, GenerateQuizResponse
 from app.schemas.tool import GenerateLessonRequest, GenerateLessonResponse
@@ -17,7 +18,11 @@ router = APIRouter(tags=["tools"], dependencies=[Depends(verify_api_key)])
 tool_service = ToolService()
 
 
-@router.post("/tools/grade_homework", response_model=GradeHomeworkResponse)
+@router.post(
+    "/tools/grade_homework",
+    response_model=GradeHomeworkResponse,
+    dependencies=[Depends(require_role(Role.teacher))],
+)
 def grade_homework(payload: GradeHomeworkRequest) -> GradeHomeworkResponse:
     """Grade student homework with simple rubric-based scoring."""
     try:
@@ -27,7 +32,11 @@ def grade_homework(payload: GradeHomeworkRequest) -> GradeHomeworkResponse:
         raise HTTPException(status_code=500, detail=f"grade_homework failed: {exc}") from exc
 
 
-@router.post("/tools/generate_quiz", response_model=GenerateQuizResponse)
+@router.post(
+    "/tools/generate_quiz",
+    response_model=GenerateQuizResponse,
+    dependencies=[Depends(require_role(Role.teacher))],
+)
 def generate_quiz(payload: GenerateQuizRequest) -> GenerateQuizResponse:
     """Generate a quiz based on a topic and difficulty level."""
     try:
@@ -37,7 +46,11 @@ def generate_quiz(payload: GenerateQuizRequest) -> GenerateQuizResponse:
         raise HTTPException(status_code=500, detail=f"generate_quiz failed: {exc}") from exc
 
 
-@router.post("/tools/generate_lesson", response_model=GenerateLessonResponse)
+@router.post(
+    "/tools/generate_lesson",
+    response_model=GenerateLessonResponse,
+    dependencies=[Depends(require_role(Role.teacher))],
+)
 def generate_lesson(payload: GenerateLessonRequest) -> GenerateLessonResponse:
     """Generate a teaching lesson plan using a template."""
     try:
@@ -47,7 +60,11 @@ def generate_lesson(payload: GenerateLessonRequest) -> GenerateLessonResponse:
         raise HTTPException(status_code=500, detail=f"generate_lesson failed: {exc}") from exc
 
 
-@router.post("/tools/generate_report", response_model=GenerateReportResponse)
+@router.post(
+    "/tools/generate_report",
+    response_model=GenerateReportResponse,
+    dependencies=[Depends(require_role(Role.teacher))],
+)
 def generate_report(payload: GenerateReportRequest) -> GenerateReportResponse:
     """Generate a learning report from conversation summary."""
     try:

@@ -7,6 +7,7 @@ Usage: POST /api/reports/learning.
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.core.auth import verify_api_key
+from app.core.roles import Role, require_role
 from app.db.repository import save_report_log
 from app.db.session import SessionLocal
 from app.schemas.report import LearningReportRequest, LearningReportResponse
@@ -16,7 +17,11 @@ router = APIRouter(tags=["reports"], dependencies=[Depends(verify_api_key)])
 report_service = ReportService()
 
 
-@router.post("/reports/learning", response_model=LearningReportResponse)
+@router.post(
+    "/reports/learning",
+    response_model=LearningReportResponse,
+    dependencies=[Depends(require_role(Role.teacher))],
+)
 def learning_report(payload: LearningReportRequest) -> LearningReportResponse:
     """Generate a learning report from key points and weaknesses."""
     try:
