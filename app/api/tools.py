@@ -4,15 +4,16 @@ Purpose: Tool endpoints (grading, quiz, lesson, report).
 Key functions/classes: tool endpoints that call ToolService.
 Usage: POST /api/tools/grade_homework etc.
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
+from app.core.auth import verify_api_key
 from app.schemas.tool import GradeHomeworkRequest, GradeHomeworkResponse
 from app.schemas.tool import GenerateQuizRequest, GenerateQuizResponse
 from app.schemas.tool import GenerateLessonRequest, GenerateLessonResponse
 from app.schemas.tool import GenerateReportRequest, GenerateReportResponse
 from app.services.tool_service import ToolService
 
-router = APIRouter(tags=["tools"])
+router = APIRouter(tags=["tools"], dependencies=[Depends(verify_api_key)])
 tool_service = ToolService()
 
 

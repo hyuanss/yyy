@@ -4,12 +4,13 @@ Purpose: RAG endpoints for querying and uploading documents.
 Key functions/classes: rag_query(), rag_upload().
 Usage: POST /api/rag/query or /api/rag/upload.
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
+from app.core.auth import verify_api_key
 from app.schemas.rag import RagQueryRequest, RagQueryResponse, RagUploadRequest, RagUploadResponse
 from app.services.rag_service import RagService
 
-router = APIRouter(tags=["rag"])
+router = APIRouter(tags=["rag"], dependencies=[Depends(verify_api_key)])
 rag_service = RagService()
 
 

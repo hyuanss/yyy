@@ -1,14 +1,17 @@
-"""
-File: streamlit_ui/app.py
-Purpose: Streamlit frontend for the education agent system.
-Key functions: render_chat(), render_tools(), render_reports().
-Usage: Run with `streamlit run streamlit_ui/app.py`.
-"""
 import os
 import requests
 import streamlit as st
 
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000/api")
+API_KEY = os.getenv("EDU_API_KEY", "")
+
+
+def _headers() -> dict:
+    """Prepare request headers with API key if configured."""
+    headers = {}
+    if API_KEY:
+        headers["X-API-Key"] = API_KEY
+    return headers
 
 
 def render_chat() -> None:
@@ -17,7 +20,12 @@ def render_chat() -> None:
     user_id = st.text_input("用户ID", value="student_001")
     message = st.text_area("请输入问题")
     if st.button("发送"):
-        response = requests.post(f"{BACKEND_URL}/chat", json={"user_id": user_id, "message": message}, timeout=30)
+        response = requests.post(
+            f"{BACKEND_URL}/chat",
+            json={"user_id": user_id, "message": message},
+            headers=_headers(),
+            timeout=30,
+        )
         st.write(response.json().get("reply", ""))
 
 
@@ -33,6 +41,7 @@ def render_tools() -> None:
             response = requests.post(
                 f"{BACKEND_URL}/tools/grade_homework",
                 json={"question": question, "answer": answer},
+                headers=_headers(),
                 timeout=30,
             )
             st.write(response.json().get("result", ""))
@@ -44,6 +53,7 @@ def render_tools() -> None:
             response = requests.post(
                 f"{BACKEND_URL}/tools/generate_quiz",
                 json={"topic": topic, "difficulty": difficulty},
+                headers=_headers(),
                 timeout=30,
             )
             st.write(response.json().get("quiz", ""))
@@ -55,6 +65,7 @@ def render_tools() -> None:
             response = requests.post(
                 f"{BACKEND_URL}/tools/generate_lesson",
                 json={"course": course, "objectives": [o.strip() for o in objectives.split(",") if o.strip()]},
+                headers=_headers(),
                 timeout=30,
             )
             st.write(response.json().get("lesson", ""))
@@ -65,6 +76,7 @@ def render_tools() -> None:
             response = requests.post(
                 f"{BACKEND_URL}/tools/generate_report",
                 json={"summary": summary},
+                headers=_headers(),
                 timeout=30,
             )
             st.write(response.json().get("report", ""))
@@ -86,6 +98,7 @@ def render_reports() -> None:
                 "weak_points": [p.strip() for p in weak_points.split(",") if p.strip()],
                 "suggestions": suggestions,
             },
+            headers=_headers(),
             timeout=30,
         )
         st.write(response.json().get("report", ""))
