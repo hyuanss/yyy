@@ -6,8 +6,9 @@ Usage: Run with `uvicorn app.main:app --reload`.
 """
 from fastapi import FastAPI
 
-from app.api import chat, rag, tools, reports
+from app.api import chat, rag, tools, reports, health
 from app.core.logging import setup_logging
+from langchain.rag.vector_store import VectorStoreService
 
 
 def create_app() -> FastAPI:
@@ -20,6 +21,12 @@ def create_app() -> FastAPI:
     application.include_router(rag.router, prefix="/api")
     application.include_router(tools.router, prefix="/api")
     application.include_router(reports.router, prefix="/api")
+    application.include_router(health.router, prefix="/api")
+
+    @application.on_event("startup")
+    def load_knowledge_base() -> None:
+        """Load knowledge documents into the vector store on startup."""
+        VectorStoreService().load_document()
 
     return application
 
