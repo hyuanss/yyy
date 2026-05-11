@@ -1,10 +1,18 @@
+from __future__ import annotations
+
 from typing import Callable, Any
-from langchain.agents import AgentState
-from langchain.agents.middleware import wrap_tool_call, before_model, dynamic_prompt, ModelRequest
-from langchain.tools.tool_node import ToolCallRequest
-from langchain_core.messages import ToolMessage
+
+try:
+    # Newer LangGraph-first middleware APIs
+    from langgraph.prebuilt import wrap_tool_call, before_model, dynamic_prompt, ModelRequest
+    from langgraph.prebuilt.tool_node import ToolCallRequest
+except ImportError:  # pragma: no cover - fallback for older langchain
+    from langchain.agents.middleware import wrap_tool_call, before_model, dynamic_prompt, ModelRequest
+    from langchain.tools.tool_node import ToolCallRequest
+
 from langgraph.runtime import Runtime
 from langgraph.types import Command
+from langchain_core.messages import ToolMessage
 from utils.logger_handler import logger
 from utils.prompt_loader import load_system_prompt, load_report_prompt
 
@@ -30,15 +38,15 @@ def monitor_tool(
 
 
 @before_model
-def log_before_model(state:AgentState, runtime: Runtime) -> dict[str, Any] | None:
+def log_before_model(state: dict[str, Any], runtime: Runtime) -> dict[str, Any] | None:
     logger.info(f"[log_before_model]: 即将调用模型，带有{len(state['messages'])}条消息，消息如下：")
     # for message in state['messages']:
     #     logger.info(f"[log_before_model][{type(message).__name__}]: {message.content.strip()}")
     logger.info(f"[log_before_model]: ----------省略已输出内容----------")
     logger.info(f"[log_before_model][{type(state['messages'][-1]).__name__}]: {state['messages'][-1].content.strip()}")
 
-
     return None
+
 
 @dynamic_prompt
 def report_prompt_switch(request: ModelRequest) -> str:
